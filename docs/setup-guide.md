@@ -1,196 +1,130 @@
-# Setup Guide
+# 🎯 Setup Guide
 
-This guide explains how to start the local webapp, install dependencies, and run the Playwright BDD tests.
+This guide explains how to start the local webapp, install dependencies, and run the Playwright BDD tests with the dual-server MCP configuration.
 
-## Prerequisites
+---
 
-Make sure you have the following installed:
+## 📋 Prerequisites
 
-- Node.js (v18 or later)
-- npm
-- Git
-- Python (optional, only if you want to use `python -m http.server` instead of `serve`)
+Make sure you have the following installed and running before starting:
 
-## Install dependencies
+- **Node.js** (v18 or later) & npm
+- **Git**
+- **VS Code** (with the GitHub Copilot extension active for Agent Mode)
+- **Docker Desktop** (must be running in the background to host the MCP environment)
 
-Open a terminal at the repository root:
+---
 
-```bash
-cd .
-```
+## 📦 Install Dependencies
 
-Install project dependencies for the `tests` folder:
+**1.** Open your terminal at the repository root
+
+**2.** Install the framework automation dependencies:
 
 ```bash
 cd tests
 npm install
 ```
 
-## Start the webapp
+---
 
-Open a second terminal and start the static webapp server from the `webapp` folder.
+## 🚀 Start the Webapp
 
-If you have `serve` installed globally:
+**1.** Open a terminal and navigate to the webapp folder
 
-```bash
-cd webapp
-npx serve@latest .
-```
-
-If `serve` is not installed, install it once:
-
-```bash
-npm install -g serve
-cd webapp
-serve .
-```
-
-Alternatively, use Python's built-in server:
+**2.** Start the static webapp server using npx:
 
 ```bash
 cd webapp
-python -m http.server 3000
+npx serve .
 ```
 
-The app should now be available at:
+**3.** Verify the app is running locally at:
 
-```text
+```
 http://localhost:3000/html/index.html
 ```
 
-## Run the Playwright BDD tests
+---
 
-With the webapp server running, open another terminal and run:
+## 🧪 Run the Playwright BDD Tests
+
+**1.** With the webapp server running in your first terminal, open a second terminal
+
+**2.** Navigate to the tests directory and execute the Cucumber BDD suite:
 
 ```bash
 cd tests
 npm run test:bdd
 ```
+---
 
-## Configure the Dual-Server MCP Integration
+## 🔧 Configure the Dual-Server MCP Integration
 
 ### Prerequisites
 
-1. **Docker Desktop** must be running at all times (open from applications menu or system tray)
-2. Both MCP servers are pre-configured in `.vscode/mcp.json` and execute inside Docker containers
+> ⚠️ **Important:** Docker Desktop must be running at all times (open from your applications menu or system tray).
+
+- Both MCP servers are pre-configured in `.vscode/mcp.json`
+- Servers automatically execute isolated inside Docker containers
 
 ### Initialize MCP Servers (One-Time Setup)
 
-1. In VS Code, open the **MCP Panel** via:
-   - The status bar icon, OR
-   - Command Palette: `Ctrl+Shift+P` → "MCP"
+**1.** In VS Code, open the MCP Panel via the status bar icon or by running:
 
-2. For each server, click **Start**:
-   - `@sooperset/mcp-atlassian` (Jira integration)
-   - `@playwright/mcp` (Dynamic DOM exploration)
+```
+Ctrl+Shift+P → "MCP"
+```
 
-3. **Reload the workspace** to synchronize environment pipes:
-   - `Ctrl+Shift+P` → `Developer: Reload Window`
-   - Wait for VS Code to restart and MCP servers to reconnect
+**2.** For each server, click **Start**:
 
-### Jira MCP Configuration
+- `@sooperset/mcp-atlassian` — Extracts live Jira ticket requirements
+- `@playwright/mcp` — Handles dynamic DOM exploration and interactive locator mapping
 
-Create a `jira-mcp.env` file in the repository root with your Jira credentials:
+**3.** Reload the workspace to synchronize environment pipes:
 
-```text
+```
+Ctrl+Shift+P → Developer: Reload Window
+```
+
+> ✅ **Status Check:** Wait for VS Code to refresh and show a green status for both MCP pipes.
+
+---
+
+## 🔐 Jira MCP Configuration
+
+**1.** Create a `jira-mcp.env` file in your repository root directory
+
+**2.** Add your Jira credentials:
+
+```env
 JIRA_URL=https://your-company.atlassian.net
 JIRA_USERNAME=you@company.com
 JIRA_API_TOKEN=your_api_token
 MCP_VERY_VERBOSE=true
 ```
 
-**How It Works**:
-- Your `.vscode/mcp.json` is configured with a `docker run` command
-- When you start the Atlassian server via the MCP Panel, it launches a Docker container
-- The container loads credentials from `jira-mcp.env` and exposes Jira query APIs
-- Communication happens via process streams (no localhost ports exposed)
-- Both servers run simultaneously for dual-layer automation
+### How It Works
 
-### Using the Servers
+- Your `.vscode/mcp.json` maps configuration straight to an isolated Docker routine
+- The container securely pulls credentials from `jira-mcp.env` and exposes Jira query APIs
+- All agent interactions happen seamlessly via process streams without exposing vulnerable localhost ports
 
-Once both servers are running and the window is reloaded:
+---
 
-**Jira Queries** (e.g., in VS Code Copilot Chat):
-```
-Show me all issues from project SCRUM
-Automate the complete end-to-end framework assets for Jira ticket SCRUM-5
-```
+## 📋 Jira Ticket Configuration Blueprint
 
-**DOM Exploration** (automatic during test generation):
-- The agent uses Playwright MCP to explore the live webapp
-- It discovers and extracts exact `data-testid` attributes
-- No manual locator guessing required
+### For SCRUM-5 Verification
 
-## Run tests with a visible browser
+To evaluate the live agentic requirement-to-code cycle, create a mock ticket on your Jira board with these exact specifications before prompting the agent:
 
-By default the Playwright test hooks launch Chromium in headless mode. To see the browser while tests run, use one of these options.
+**Project Key:** `SCRUM`
 
-### Option 1: update hooks.ts
+**Issue ID/Key:** `SCRUM-5`
 
-Edit `tests/src/support/hooks.ts` and change:
+**Summary/Title:** `User logs in successfully with valid credentials`
 
-```ts
-this.browser = await chromium.launch({ headless: true });
-```
-
-to:
-
-```ts
-this.browser = await chromium.launch({ headless: false });
-```
-
-### Option 2: use Playwright debug mode in PowerShell
-
-In PowerShell, set the environment variable first and then run the tests:
-
-```powershell
-$env:PWDEBUG = '1'
-cd tests
-npm run test:bdd
-```
-
-This opens the Playwright browser and pauses on actions so you can inspect the flow.
-
-### VS Code Extension
-
-You can also use the Playwright VS Code Extension to create, run, and debug tests directly inside VS Code.
-- Install the extension from the marketplace
-- Open the workspace and use the Playwright test explorer
-- This is especially useful for inspecting test failures and running individual scenarios
-
-## What these commands do
-
-- `npx serve .` starts a static file server from the `webapp` folder
-- `npm install` installs the test dependencies in `tests/`
-- `npm run test:bdd` starts Cucumber and runs your step definitions against the app
-
-## Troubleshooting
-
-- If the browser cannot connect to `http://localhost:3000`, make sure the webapp server is running.
-- If the Playwright hooks timeout while launching Chromium, run:
-
-```bash
-cd tests
-npx playwright install chromium
-```
-
-- If you are on PowerShell and want headed browser debugging, use:
-
-```powershell
-$env:PWDEBUG = '1'
-npm run test:bdd
-```
-
-- If `serve` is not found, install it globally with `npm install -g serve` or use Python's `http.server`.
-
-### 📋 Jira Ticket Configuration Blueprint (For SCRUM-5)
-
-If you want to test the live Jira MCP integration, create a new story or task on your personal Atlassian Jira board with these exact details so the agent can parse it perfectly:
-
-*   **Project Key:** SCRUM
-*   **Issue ID/Key:** SCRUM-5
-*   **Summary/Title:** User logs in successfully with valid credentials
-*   **Description** (Copy and paste this exact Gherkin scenario into the description box):
+**Description:** Paste this exact block into the description field:
 
 ```gherkin
 Feature: User Sign In
@@ -203,11 +137,115 @@ Feature: User Sign In
     Then the user should be redirected to the dashboard page
 ```
 
-## Next steps
+---
 
-Once the tests run successfully, you can continue by:
+## 🤖 Using the Servers
 
-- adding additional feature files to `tests/features/`
-- expanding page objects under `tests/src/pages/`
-- adding step definitions under `tests/src/steps/`
-- documenting Jira and MCP configuration in `docs/jira-setup.md` and `docs/mcp-setup.md`
+Once both servers are running, the window is reloaded, and your Jira ticket is configured:
+
+**1.** Open VS Code Copilot Chat (Agent Mode)
+
+**2.** Issue declarative automation prompts such as:
+
+```
+Show me all issues from project SCRUM
+Automate the complete end-to-end framework assets for Jira ticket SCRUM-5
+```
+
+**Result:** The agent will automatically:
+
+- Pull requirements using the Jira MCP server
+- Analyze the running webapp via the Playwright MCP server
+- Map out exact `data-testid` attributes
+- Construct compliant code completely from scratch
+
+---
+
+## 🐛 Interactive Test Debugging
+
+The test suite runs in **headed mode by default** (`headless: false` in `tests/src/support/hooks.ts`), so you will see the browser UI during execution. Tests execute quickly with this configuration.
+
+If a scenario is failing and you need to slow down execution, inspect the DOM, or step through automation line-by-line, use Playwright's built-in interactive debugger.
+
+### Using the Debugger in Windows PowerShell
+
+**1.** Open a Windows PowerShell terminal
+
+**2.** Navigate to your test suite directory
+
+**3.** Initialize the debug variable before executing tests:
+
+```powershell
+cd tests
+$env:PWDEBUG = '1'
+npm run test:bdd
+```
+
+**Result:** Playwright Inspector opens side-by-side with the browser, pauses execution at each step, and lets you visually debug the live workspace.
+
+### VS Code Extension
+
+You can also leverage the official **Playwright VS Code Extension** to run and trace tests visually:
+
+**1.** Install the extension from the VS Code Marketplace
+
+**2.** Open the test explorer sidebar to run individual scenarios
+
+**3.** Audit trace logs and evaluate exact assertion failures
+
+> 💡 **Pro Tip:** This is highly recommended for debugging complex test scenarios.
+
+---
+
+## 🛠️ Command Reference
+
+| Command | Purpose |
+|---------|---------|
+| `npx serve .` | Starts a low-overhead static file server targeting your sandbox webapp folder |
+| `npm install` | Provisions local node modules required to run TypeScript, Playwright, and Cucumber |
+| `npm run test:bdd` | Runs the Cucumber-js CLI wrapper to parse features against active step definitions |
+
+---
+
+## 🚨 Troubleshooting
+
+### App Connection Failures
+
+**Problem:** Browser cannot connect to `http://localhost:3000`
+
+**Solution:** Ensure your first terminal is still running `npx serve .`
+
+### Missing Chromium Binaries
+
+**Problem:** Playwright hooks timeout while launching the browser engine
+
+**Solution:** Explicitly pull down the system binaries by running:
+
+```bash
+cd tests
+npx playwright install chromium
+```
+
+### PowerShell Windows Debugging
+
+**Problem:** On native Windows PowerShell, headed browser tracking not working
+
+**Solution:** Navigate to the folder before triggering the debug variable:
+
+```powershell
+cd tests
+$env:PWDEBUG = '1'
+npm run test:bdd
+```
+
+---
+
+## 📚 Next Steps
+
+Once your validation runs return green, you can build upon the framework by:
+
+**1.** Creating custom feature files inside `tests/features/`
+
+**2.** Mapping new UI patterns into reusable classes under `tests/src/pages/`
+
+**3.** Writing lightweight, logic-free binding steps under `tests/src/steps/`

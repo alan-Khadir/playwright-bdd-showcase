@@ -22,7 +22,7 @@ This repository demonstrates **advanced AI-driven test automation** using a dual
 
 **Dual-Server MCP Configuration**: [`.vscode/mcp.json`](.vscode/mcp.json)
 - **Atlassian Server** (`@sooperset/mcp-atlassian`): Jira requirement extraction
-- **Playwright Server** (`@playwright/mcp@latest`): Dynamic DOM analysis and locator discovery
+- **Playwright Server** (`@playwright/mcp`): Dynamic DOM analysis and locator discovery
 - Both servers execute inside Docker containers for security and session isolation
 
 ### Tech Stack
@@ -64,7 +64,7 @@ This caches all dependencies locally before initializing MCP server channels.
 **Terminal 1** — Start the web app:
 ```bash
 cd webapp
-npx serve@latest .
+npx serve .
 # App available at http://localhost:3000/html/index.html
 ```
 
@@ -101,18 +101,18 @@ Whichever option you choose, the agent will autonomously:
 
 ### Debugging & Troubleshooting
 
-**View Browser During Test Execution**:
+**Default Browser Execution**: The test suite runs in **headed mode by default** (`headless: false` in `tests/src/support/hooks.ts`), so you will see the browser UI during test execution.
+
+**Interactive Step Debugging**:
 ```powershell
 $env:PWDEBUG = '1'
 cd tests
 npm run test:bdd
 ```
+This opens the Playwright Inspector side-by-side with the browser for interactive stepping and DOM inspection.
 
-**Update Hooks for Headed Browser** (always visible):
-Edit `tests/src/support/hooks.ts` and change `headless: true` to `headless: false`.
-
-**Playwright Inspector**:
-Use the Playwright VS Code Extension to create, run, and debug tests interactively. See [Playwright VS Code Docs](https://playwright.dev/docs/getting-started-vscode).
+**Playwright VS Code Extension**:
+Use the [Playwright VS Code Extension](https://playwright.dev/docs/getting-started-vscode) to create, run, trace, and debug tests visually with the test explorer.
 
 ### Documentation & Architecture
 
