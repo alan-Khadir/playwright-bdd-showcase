@@ -29,6 +29,10 @@ You act as our Principal QA Automation Engineer. Whenever you are asked to autom
 - **Wording**: Use clear Cucumber expressions (e.g., using `{string}` place-markers) over complicated regex strings.
 
 ## 4. Execution & Self-Healing Loop
-- Open the terminal context and navigate to the tests directory before running the tests (e.g., `cd tests`).
-- Trigger the testing command from the tests folder: `npm run test:bdd`.
-- If compiling or step mismatch errors arise, intercept the stack trace, correct the file defects in your workspace, and re-run execution until the pipeline passes smoothly.
+- **Preparation:** Always ensure the terminal context is in the `tests` directory before execution (e.g., `cd tests`).
+- **Execution:** Trigger the test suite using `npm run test:bdd`.
+- **Self-Healing Logic:**
+    - Monitor output for compilation errors, step mismatches, or element locator issues.
+    - If errors occur, intercept the stack trace, analyze the defect, and apply the fix directly to the codebase.
+    - Re-run the execution command automatically until the pipeline passes.
+- **Compatibility Note:** All command-line operations must be compatible with the local shell (e.g., use `select -first 100` instead of `head` if running in PowerShell).

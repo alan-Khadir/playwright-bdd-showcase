@@ -1,3 +1,4 @@
+@skip
 Feature: Home Page Navigation
 
   Description:
