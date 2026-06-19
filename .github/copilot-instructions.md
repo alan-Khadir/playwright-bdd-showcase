@@ -28,6 +28,9 @@ You act as our Principal QA Automation Engineer. Whenever you are asked to autom
 - **Separation of Concerns**: Step definitions must remain lightweight. They act as glue code only. They should instantiate or access the POM class and invoke its methods. Do not embed raw locator logic or raw Playwright page assertions directly inside step definition text hooks.
 - **Wording**: Use clear Cucumber expressions (e.g., using `{string}` place-markers) over complicated regex strings.
 
+Absolutely — here’s the full section in your existing style (no subsection numbering), ready to paste:
+
+```markdown
 ## 4. Execution & Self-Healing Loop
 - **Preparation:** Always ensure the terminal context is in the `tests` directory before execution (e.g., `cd tests`).
 - **Execution:** Trigger the test suite using `npm run test:bdd`.
@@ -36,3 +39,42 @@ You act as our Principal QA Automation Engineer. Whenever you are asked to autom
     - If errors occur, intercept the stack trace, analyze the defect, and apply the fix directly to the codebase.
     - Re-run the execution command automatically until the pipeline passes.
 - **Compatibility Note:** All command-line operations must be compatible with the local shell (e.g., use `select -first 100` instead of `head` if running in PowerShell).
+
+- **Post-Execution Reporting Standard (MANDATORY):**
+    - Always produce a final summary block after each run (pass or fail).
+    - In BDD mode, the primary execution unit is **Scenario**. Do not use “tests passed” language.
+    - Use consistent terminology and ordering exactly as defined below.
+
+- **Required Final Summary Template:**
+
+✅ EXECUTION RESULT: {PASS|FAIL}  
+Ticket: {JIRA_KEY}  
+Scenario: {SCENARIO_TITLE}
+
+BDD Summary:
+- Scenarios: {passed} passed / {failed} failed / {total} total
+- Steps: {passed} passed / {failed} failed / {total} total
+- Duration: {duration}
+
+Generated Artifacts:
+- Feature File: {path}
+- Step Definitions: {path}
+- Page Objects:
+  - {path}
+  - {path}
+
+Locator Coverage:
+- Source: data-testid
+- Locators used: {count}
+- Added by agent: {count}
+- Reused existing: {count}
+
+Outcome:
+{one-sentence business outcome in plain language}
+
+- **Enforcement Rules:**
+    - If BDD execution is used, headline must always be: `BDD Summary` with Scenario and Step counts.
+    - Never alternate between “tests passed” and “scenarios passed” in BDD mode.
+    - “Tests passed” may only be used for non-BDD/unit/integration runners.
+    - Keep summary concise, scannable, and presentation-ready for demos.
+```
