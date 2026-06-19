@@ -9,7 +9,12 @@
   },
   "scripts": {
     "test": "playwright test",
-    "test:bdd": "cucumber-js --require-module ts-node/register --require src/**/*.ts --format progress"
+    "test:bdd": "cucumber-js --require-module ts-node/register --require src/**/*.ts --format progress",
+    "test:bdd:demo": "cucumber-js --require-module ts-node/register --require src/**/*.ts --format progress --format json:reports/cucumber-report.json && node generate-report.js && start reports/html/index.html",
+    "report:bdd": "node generate-report.js",
+    "report:open:win": "start reports/html/index.html",
+    "report:open:mac": "open reports/html/index.html",
+    "report:open:linux": "xdg-open reports/html/index.html"
   },
   "repository": {
     "type": "git",
@@ -27,6 +32,7 @@
     "@cucumber/cucumber": "^13.0.0",
     "@playwright/test": "^1.60.0",
     "@types/node": "^25.9.2",
+    "multiple-cucumber-html-reporter": "^4.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3"
   }

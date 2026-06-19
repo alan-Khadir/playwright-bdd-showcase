@@ -39,7 +39,15 @@ Absolutely — here’s the full section in your existing style (no subsection n
     - If errors occur, intercept the stack trace, analyze the defect, and apply the fix directly to the codebase.
     - Re-run the execution command automatically until the pipeline passes.
 - **Compatibility Note:** All command-line operations must be compatible with the local shell (e.g., use `select -first 100` instead of `head` if running in PowerShell).
-
+- **Demo Reporting Flow (MANDATORY for recordings):**
+    - Use `npm run test:bdd:demo` for demos.
+    - Demo flow must: run tests, generate HTML report, and open report automatically.
+    - Standard `npm run test:bdd` remains non-interactive (CI-friendly) and must not auto-open browsers.
+    - HTML report output path: `reports/html/index.html`.
+    - Cross-platform open commands:
+        - Windows: `npm run report:open:win`
+        - macOS: `npm run report:open:mac`
+        - Linux: `npm run report:open:linux`
 - **Post-Execution Reporting Standard (MANDATORY):**
     - Always produce a final summary block after each run (pass or fail).
     - In BDD mode, the primary execution unit is **Scenario**. Do not use “tests passed” language.

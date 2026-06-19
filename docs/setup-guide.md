@@ -57,6 +57,38 @@ http://localhost:3000/html/index.html
 cd tests
 npm run test:bdd
 ```
+
+---
+
+## 📊 Visual BDD Report for Demo
+
+The framework supports visual HTML report generation for demos and presentations. The report is generated from Cucumber JSON output using `multiple-cucumber-html-reporter`.
+
+**Run the full demo flow** (tests + HTML report + auto-open):
+
+```bash
+cd tests
+npm run test:bdd:demo
+```
+
+This command executes all BDD scenarios, generates the HTML report at `reports/html/index.html`, and opens it in your default browser automatically.
+
+**Generate the report separately** (without re-running tests):
+
+```bash
+npm run report:bdd
+```
+
+**Open the report manually** (cross-platform):
+
+| Platform | Command |
+|----------|---------|
+| Windows  | `npm run report:open:win` |
+| macOS    | `npm run report:open:mac` |
+| Linux    | `npm run report:open:linux` |
+
+> **Note:** `npm run test:bdd` remains CI-friendly and non-interactive — it does not generate or auto-open reports. Use `npm run test:bdd:demo` exclusively for demo recordings and presentations.
+
 ---
 
 ## 🔧 Configure the Dual-Server MCP Integration
@@ -203,7 +235,12 @@ You can also leverage the official **Playwright VS Code Extension** to run and t
 |---------|---------|
 | `npx serve .` | Starts a low-overhead static file server targeting your sandbox webapp folder |
 | `npm install` | Provisions local node modules required to run TypeScript, Playwright, and Cucumber |
-| `npm run test:bdd` | Runs the Cucumber-js CLI wrapper to parse features against active step definitions |
+| `npm run test:bdd` | Runs the Cucumber BDD suite (CI-friendly, no report auto-open) |
+| `npm run test:bdd:demo` | Runs BDD tests, generates HTML report at `reports/html/index.html`, and opens it automatically |
+| `npm run report:bdd` | Generates the HTML report from the last Cucumber JSON output |
+| `npm run report:open:win` | Opens the HTML report on Windows |
+| `npm run report:open:mac` | Opens the HTML report on macOS |
+| `npm run report:open:linux` | Opens the HTML report on Linux |
 
 ---
 

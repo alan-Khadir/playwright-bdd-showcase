@@ -183,7 +183,12 @@ npm install --save-dev @cucumber/cucumber typescript ts-node @types/node
 ```json
 "scripts": {
   "test": "playwright test",
-  "test:bdd": "cucumber-js --require-module ts-node/register --require src/**/*.ts --format progress"
+  "test:bdd": "cucumber-js --require-module ts-node/register --require src/**/*.ts --format progress",
+  "test:bdd:demo": "cucumber-js --require-module ts-node/register --require src/**/*.ts --format progress --format json:reports/cucumber-report.json && node generate-report.js && start reports/html/index.html",
+  "report:bdd": "node generate-report.js",
+  "report:open:win": "start reports/html/index.html",
+  "report:open:mac": "open reports/html/index.html",
+  "report:open:linux": "xdg-open reports/html/index.html"
 }
 ```
 11. Create the Cucumber support infrastructure:
@@ -238,6 +243,16 @@ npm run test:bdd
 
 26. Add HTML test reports and screenshot capture on failure.
 27. Add the 3-Agent workflow (build app, pull Jira, write tests) as an advanced goal.
+
+### PHASE 7 — Post-Execution Reporting Standardization
+
+28. Standardize post-execution reporting across all BDD runs.
+    - **Acceptance Criteria:**
+      - All execution summaries must use consistent BDD terminology: **Scenarios** and **Steps** (never "tests passed" in BDD mode).
+      - Summary format must include: Scenario count, Step count, Duration, Generated Artifacts, and Locator Coverage.
+    - **Deliverable:** HTML report generated at `reports/html/index.html` using `multiple-cucumber-html-reporter`.
+    - **Demo Flow:** `npm run test:bdd:demo` must execute tests, generate the HTML report, and auto-open it in the default browser.
+    - **CI Flow:** `npm run test:bdd` must remain non-interactive and must not auto-open browsers or generate HTML reports.
 
 ## Running tests locally (diagram)
 
