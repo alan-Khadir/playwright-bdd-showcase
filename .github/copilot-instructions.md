@@ -97,10 +97,10 @@ Outcome:
 To assist with video demonstration, please follow these communication protocols for every major stage:
 
 **Milestones:**
-1. **Requirements & Setup:** Fetching the Jira task, checking existing test coverage, and analyzing current project configuration.
-2. **Live Scenario Validation:** Analyzing the app's internal logic and walking through the live UI to confirm the flow and find all elements.
-3. **Asset Generation:** Writing the new automation tests.
-4. **Test Execution:** Running the tests and fixing any issues automatically (Self-Healing).
+1. **Requirements & Setup:** Get the Jira ticket, understand what the user needs, check if similar tests already exist, and review the current project setup plus relevant test and application files so the automation can be added safely.
+2. **Live Scenario Validation:** Open and use the live app to confirm the real user journey, identify required elements, and capture existing `data-testid` values. For any required element without a stable `data-testid`, record it as a required automation ID.
+3. **Asset Generation:** Create or update feature files, step definitions, and page objects. Add any required missing `data-testid` attributes to the app code first, then reference those IDs in page objects.
+4. **Test Execution:** Run the selected test command, generate reports, and if something fails, automatically fix and re-run until tests pass or a clear blocker is found. Always end the terminal output with a clear BDD summary (scenarios passed/failed, steps passed/failed, duration, and report path).
 
 **Protocol:**
 1. **Formatting:** Use **bold text** and clear separators (e.g., `---`) for all milestone updates so they are highly visible within the terminal logs.
