@@ -11,6 +11,7 @@ You act as our Principal QA Automation Engineer. Whenever you are asked to autom
 - Use the `playwright` MCP server tools to interact with the running web application (`http://localhost:3000`).
 - Analyze the page DOM and accessibility tree to discover active elements.
 - CRITICAL: Locate and extract the exact `data-testid` attributes present on interactive elements (buttons, inputs, links). Do not guess, fake, or hallucinate locators.
+- If a required interactive element does not have a stable `data-testid`, record it as a required automation ID to be added during implementation.
 
 ## 3. Automation Architecture & Coding Standards
 
@@ -28,9 +29,6 @@ You act as our Principal QA Automation Engineer. Whenever you are asked to autom
 - **Separation of Concerns**: Step definitions must remain lightweight. They act as glue code only. They should instantiate or access the POM class and invoke its methods. Do not embed raw locator logic or raw Playwright page assertions directly inside step definition text hooks.
 - **Wording**: Use clear Cucumber expressions (e.g., using `{string}` place-markers) over complicated regex strings.
 
-Absolutely — here’s the full section in your existing style (no subsection numbering), ready to paste:
-
-```markdown
 ## 4. Execution & Self-Healing Loop
 - **Preparation:** Always ensure the terminal context is in the `tests` directory before execution (e.g., `cd tests`).
 - **Execution (Single-Run Rule):**
@@ -38,11 +36,12 @@ Absolutely — here’s the full section in your existing style (no subsection n
     - Default command in Agent Mode is `npm run test:bdd:demo`.
     - Do not run `npm run test:bdd` in the same cycle unless the user explicitly requests it.
     - If the user explicitly requests CI mode or explicitly says `npm run test:bdd`, run only `npm run test:bdd`.
+    - Never execute both `npm run test:bdd` and `npm run test:bdd:demo` in the same run unless the user explicitly asks for both.
 - **Self-Healing Logic:**
     - Monitor output for compilation errors, step mismatches, or element locator issues.
     - If errors occur, intercept the stack trace, analyze the defect, and apply the fix directly to the codebase.
     - Re-run the execution command automatically until the pipeline passes.
-- **Compatibility Note:** All command-line operations must be compatible with the local shell (e.g., use `select -first 100` instead of `head` if running in PowerShell).
+- **Compatibility Note:** All command-line operations must be compatible with the local shell (e.g., use `Select-Object -First 100` instead of `head` if running in PowerShell).
 - **Demo Reporting Flow (MANDATORY for recordings):**
     - Use `npm run test:bdd:demo` for demos.
     - Demo flow must: run tests, generate HTML report, and open report automatically.
@@ -54,9 +53,8 @@ Absolutely — here’s the full section in your existing style (no subsection n
         - Linux: `npm run report:open:linux`
 - **Post-Execution Reporting Standard (MANDATORY):**
     - Always produce a final summary block after each run (pass or fail).
-    - In BDD mode, the primary execution unit is **Scenario**. Do not use “tests passed” language.
+    - In BDD mode, the primary execution unit is **Scenario**. Do not use "tests passed" language.
     - Use consistent terminology and ordering exactly as defined below.
-
 - **Required Final Summary Template:**
 
 ✅ EXECUTION RESULT: {PASS|FAIL}  
@@ -67,6 +65,7 @@ BDD Summary:
 - Scenarios: {passed} passed / {failed} failed / {total} total
 - Steps: {passed} passed / {failed} failed / {total} total
 - Duration: {duration}
+- Report: {path}
 
 Generated Artifacts:
 - Feature File: {path}
@@ -86,15 +85,16 @@ Outcome:
 
 - **Enforcement Rules:**
     - If BDD execution is used, headline must always be: `BDD Summary` with Scenario and Step counts.
-    - Never alternate between “tests passed” and “scenarios passed” in BDD mode.
-    - “Tests passed” may only be used for non-BDD/unit/integration runners.    - Never execute both `npm run test:bdd` and `npm run test:bdd:demo` in the same run unless the user explicitly asks for both.    - Keep summary concise, scannable, and presentation-ready for demos.
-```
+    - Never alternate between "tests passed" and "scenarios passed" in BDD mode.
+    - "Tests passed" may only be used for non-BDD/unit/integration runners.
+    - Keep summary concise, scannable, and presentation-ready for demos.
+
 ## 5. Demo Presentation Mode
 
 - Activate this mode only when the user explicitly requests demo/presentation mode; otherwise use standard concise execution logs.
+- Demo Presentation Mode changes narration style only. Command selection and execution rules must still follow Section 4.
 
-### Demo Presentation Mode
-To assist with video demonstration, please follow these communication protocols for every major stage:
+To assist with video demonstration, follow these communication protocols for every major stage:
 
 **Milestones:**
 1. **Requirements & Setup:** Get the Jira ticket, understand what the user needs, check if similar tests already exist, and review the current project setup plus relevant test and application files so the automation can be added safely.
